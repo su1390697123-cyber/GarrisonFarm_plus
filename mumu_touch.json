@@ -1,0 +1,6 @@
+{
+  "enabled": true,
+  "package_name": "auto",
+  "move_interval": 0.016,
+  "fast_capture": true
+}
