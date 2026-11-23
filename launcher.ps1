@@ -70,7 +70,7 @@ if ($env:GF_LAUNCH_MODE -eq 'help') {
     Write-Host '请选择刷取方式：'
     Write-Host '  1. 普通刷角标：达到所选角标要求后换角色（默认）'
     Write-Host '  2. 固定第一角色：忽略角标与通关次数，反复刷列表第一项'
-    Write-Host '  3. 固定指定角色：按列表的行、列选择（每行 4 个）'
+    Write-Host '  3. 固定指定角色：按列表的行、列选择（每行最多 4 个）'
     do {
         $choice = Read-Host '请输入 1、2 或 3，直接回车选 1'
         if ($null -eq $choice) { throw '输入已关闭，取消启动。' }
@@ -81,10 +81,10 @@ if ($env:GF_LAUNCH_MODE -eq 'help') {
     $env:GF_FIXED_FIRST = if ($choice -in @('2', '3')) { '1' } else { '0' }
     if ($choice -eq '3') {
         Write-Host '从整张角色列表顶部开始计数：行从上到下，列从左到右，均从 1 开始。'
-        Write-Host '例如第 5 行、第 2 列是列表第 18 个角色；脚本会自动滚动到该位置。'
+        Write-Host '分类标题不算行；只有 1～3 人也算一行，两类之间连续编号。脚本会自动滚动定位。'
         $fixedRow = 0
         do {
-            $rowText = Read-Host '固定第几行？请输入正整数'
+            $rowText = Read-Host '固定第几行？从顶部连续计数，分类标题不算行（正整数）'
             if ($null -eq $rowText) { throw '输入已关闭，取消启动。' }
             $valid = [int]::TryParse($rowText.Trim(), [ref]$fixedRow) -and $fixedRow -gt 0
             if (-not $valid) { Write-Host '行号必须是正整数。' }
@@ -94,7 +94,7 @@ if ($env:GF_LAUNCH_MODE -eq 'help') {
             $colText = Read-Host '固定第几列？请输入 1～4'
             if ($null -eq $colText) { throw '输入已关闭，取消启动。' }
             $valid = [int]::TryParse($colText.Trim(), [ref]$fixedCol) -and $fixedCol -ge 1 -and $fixedCol -le 4
-            if (-not $valid) { Write-Host '每行只有 4 列，请输入 1～4。' }
+            if (-not $valid) { Write-Host '每行最多 4 列，请输入 1～4；该位置需有角色。' }
         } until ($valid)
         $env:GF_FIXED_ROW = [string]$fixedRow
         $env:GF_FIXED_COL = [string]$fixedCol
